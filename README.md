@@ -17,3 +17,13 @@ https://framagit.org/luc/lufi#tab-readme
 	    - 8080:8080/tcp
 	    restart: always
 	version: '2.2'
+
+## Cron lufi
+
+### Nettoyage de la db
+
+	docker-compose exec app docker-carton exec script/lufi cron cleanbdd --mode production
+
+### Nettoyage des fichiers
+
+	docker-compose exec app docker-carton exec script/lufi cron cleanfiles --mode production
