@@ -2,7 +2,7 @@
 
 ## Projet Lufi
 
-https://framagit.org/luc/lufi#tab-readme
+https://framagit.org/fiat-tux/hat-softwares/lufi#tab-readme
 
 ## Compose
 

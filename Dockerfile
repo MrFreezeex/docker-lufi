@@ -2,8 +2,7 @@ FROM debian:buster
 LABEL maintainer="s7b4 <baron.stephane@gmail.com>"
 
 ENV APP_USER=lufi \
-	APP_TREE=0.04.2 \
-	GOSU_VERSION=1.11
+	APP_TREE=0.04.6
 
 ENV APP_HOME=/opt/$APP_USER \
 	APP_WORK=/home/$APP_USER
@@ -29,12 +28,9 @@ RUN apt-get update \
 		default-libmysqlclient-dev \
 		carton \
 		libmodule-install-perl \
+		gosu \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
-
-# Gosu
-RUN curl -o /usr/local/sbin/gosu -sSL "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
-	&& chmod +x /usr/local/sbin/gosu
 
 # Lufi
 RUN mkdir -p $APP_HOME $APP_WORK \
