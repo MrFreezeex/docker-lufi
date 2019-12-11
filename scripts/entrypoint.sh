@@ -9,6 +9,12 @@ ENV_FILE="$APP_WORK/lufi.env"
 TEMP_FOLDER="$APP_WORK/tmp"
 FILE_FOLDER="$APP_WORK/files"
 
+MAX_FILE_SIZE=${MAX_FILE_SIZE:-"10*1024*1024*1024"}
+DEFAULT_DELAY=${DEFAULT_DELAY:-"7"}
+MAX_DELAY=${MAX_DELAY:-"60"}
+INSTANCE_NAME=${INSTANCE_NAME:-"Lufi"}
+SECRET=${SECRET:-$(head -c1024 /dev/urandom | sha1sum | cut -d' ' -f1)}
+
 if [ ! -f "$CONF_FILE" ]; then
 	# Création de la configuration
 	cp "$APP_HOME/lufi.conf.template" "$CONF_FILE"
@@ -17,9 +23,9 @@ if [ ! -f "$CONF_FILE" ]; then
 	sed -i -E "s|listen\s+=>\s+\['.*'\]|listen => ['http://*:8080']|" "$CONF_FILE"
 	sed -i -E "s|#proxy\s+=>.*,|proxy => 1,|" "$CONF_FILE"
 
-	sed -i -E "s|#contact\s+=>.*,|contact => 'docker[at]localhost.localdomain',|" "$CONF_FILE"
-	sed -i -E "s|#report\s+=>.*,|report => 'docker[at]localhost.localdomain',|" "$CONF_FILE"
-	sed -i -E "s|#secrets\s+=>.*,|secrets => ['$(head -c1024 /dev/urandom | sha1sum | cut -d' ' -f1)'],|" "$CONF_FILE"
+	sed -i -E "s|#contact\s+=>.*,|contact => '<a href=\"mailto:$CONTACT\">Contact</a>',|" "$CONF_FILE"
+	sed -i -E "s|#report\s+=>.*,|report => '$CONTACT',|" "$CONF_FILE"
+	sed -i -E "s|#secrets\s+=>.*,|secrets => ['$SECRET'],|" "$CONF_FILE"
 
 	sed -i -E "s|#dbtype\s+=>.*,|dbtype => 'sqlite',|" "$CONF_FILE"
 	sed -i -E "s|#db_path\s+=>.*,|db_path => '$DB_FILE',|" "$CONF_FILE"
@@ -32,6 +38,11 @@ if [ ! -f "$CONF_FILE" ]; then
 
 	# Pid file
 	sed -i "/hypnotoad => {/a        pid_file => '$PID_FILE'," "$CONF_FILE"
+
+	sed -i -E "s|#default_delay\s+=>.*,|default_delay  => $DEFAULT_DELAY,|" "$CONF_FILE"
+	sed -i -E "s|#max_delay\s+=>.*,|max_delay  => $MAX_DELAY,|" "$CONF_FILE"
+	sed -i -E "s|#max_file_size\s+=>.*,|max_file_size  => $MAX_FILE_SIZE,|" "$CONF_FILE"
+	sed -i -E "s|#instance_name\s+=>.*,|instance_name  => '$INSTANCE_NAME',|" "$CONF_FILE"
 fi
 
 # VACUUM DB
